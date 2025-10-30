@@ -66,34 +66,43 @@ entity RestockPurchaseOrder {
     restockTotalAmt: DECIMAL(10,2)
 }
 
+// A customer can have multiple orders (0..N)
 relationship CustomerOrder {
     Customer[1 | "customer"] -> Order[0..N | "orders"]
 }
 
+// Each order can have one or many lines (1..N)
 relationship OrderLine {
     Order[1 | "order"] -> Line[1..N | "lines"]
 }
 
+// Each line must reference one and only one product (1..1)
 relationship ProductLine {
-    Product[1 | "product"] -> Line[0..N | "lines"]
+    Product[1 | "product"] -> Line[1 | "line"]
 }
 
+// Each order must generate one and only one invoice (1..1)
 relationship OrderInvoice {
     Order[1 | "order"] -> Invoice[1 | "invoice"]
 }
 
+// Each invoice must belong to only 1 customer
 relationship CustomerInvoice {
-    Customer[1 | "customer"] -> Invoice[1..N | "invoices"]
+    Customer[1 | "customer"] -> Invoice[0..N | "invoices"]
 }
 
+// Each product must belong to one and only one manufacturer
 relationship ManufacturerProduct {
     Manufacturer[1 | "manufacturer"] -> Product[1..N | "products"]
 }
 
+// Each manufacturer can have 0 or many restock purchase orders
 relationship ManufacturerRestock {
     Manufacturer[1 | "manufacturer"] -> RestockPurchaseOrder[0..N | "restock_orders"]
 }
 
+// Each restock purchase order must have 1 or many products
 relationship ProductRestock {
     Product[1 | "product"] -> RestockPurchaseOrder[0..N | "restock_orders"]
+}
 }
