@@ -1,59 +1,99 @@
-erdiagram UniversityModel
+erdiagram OrderSystem
 notation=crowsfoot
 
-entity Student {
-    student_id: INTEGER key
-    name: VARCHAR(100)
-    email: VARCHAR(100)
-    major: VARCHAR(50)
-    year: INTEGER
+entity Customer {
+    CustID: INTEGER key
+    custFName: VARCHAR(50)
+    custLName: VARCHAR(50)
+    custEmail: VARCHAR(100)
+    custPhone: VARCHAR(20)
+    custAddress: VARCHAR(200)
+    custCity: VARCHAR(100)
+    custZipcode: VARCHAR(10)
 }
 
-entity Course {
-    course_id: VARCHAR(10) key
-    title: VARCHAR(200)
-    credits: INTEGER
-    department_id: VARCHAR(10)
-    instructor_id: INTEGER
+entity Order {
+    orderID: INTEGER key
+    custID: INTEGER
+    orderDate: DATE
+    orderStatus: VARCHAR(20)
+    orderTotalAmt: DECIMAL(10,2)
+    orderShipDate: DATE
 }
 
-entity Instructor {
-    instructor_id: INTEGER key
-    name: VARCHAR(100)
-    email: VARCHAR(100)
-    department_id: VARCHAR(10)
+entity Line {
+    lineID: INTEGER key
+    orderID: INTEGER
+    prodID: INTEGER
+    lineQtyOrder: INTEGER
+    lineUnitPrice: DECIMAL(10,2)
 }
 
-entity Department {
-    department_id: VARCHAR(10) key
-    name: VARCHAR(100)
-    location: VARCHAR(100)
+entity Product {
+    prodID: INTEGER key
+    prodName: VARCHAR(100)
+    prodDescription: TEXT
+    prodType: VARCHAR(50)
+    prodCategory: VARCHAR(50)
+    prodSize: VARCHAR(20)
+    prodPrice: DECIMAL(10,2)
+    prodMinQty: INTEGER
+    prodQOH: INTEGER
+    manufactureID: INTEGER
 }
 
-entity Enrollment {
-    enrollment_id: INTEGER key
-    student_id: INTEGER
-    course_id: VARCHAR(10)
-    grade: VARCHAR(2)
-    semester: VARCHAR(20)
+entity Invoice {
+    invID: INTEGER key
+    custID: INTEGER
+    orderID: INTEGER
+    invTotalAmt: DECIMAL(10,2)
+    invDate: DATE
 }
 
-relationship StudentEnrollment {
-    Student[1 | "student"] -> Enrollment[0..N | "enrollment"]
+entity Manufacturer {
+    manufactureID: INTEGER key
+    manuName: VARCHAR(100)
+    manuAddress: VARCHAR(200)
+    manuCity: VARCHAR(100)
+    manuZipCode: VARCHAR(10)
+    manuPhone: VARCHAR(20)
 }
 
-relationship CourseEnrollment {
-    Course[1 | "course"] -> Enrollment[0..N | "enrollment"]
+entity RestockPurchaseOrder {
+    restockID: INTEGER key
+    prodID: INTEGER
+    restockDate: DATE
+    restockTotalAmt: DECIMAL(10,2)
 }
 
-relationship CourseInstructor {
-    Course[0..N | "course"] -> Instructor[1 | "instructor"]
+relationship CustomerOrder {
+    Customer[1 | "customer"] -> Order[0..N | "orders"]
 }
 
-relationship CourseDepartment {
-    Course[0..N | "course"] -> Department[1 | "department"]
+relationship OrderLine {
+    Order[1 | "order"] -> Line[1..N | "lines"]
 }
 
-relationship InstructorDepartment {
-    Instructor[0..N | "instructor"] -> Department[1 | "department"]
+relationship ProductLine {
+    Product[1 | "product"] -> Line[0..N | "lines"]
+}
+
+relationship OrderInvoice {
+    Order[1 | "order"] -> Invoice[1 | "invoice"]
+}
+
+relationship CustomerInvoice {
+    Customer[1 | "customer"] -> Invoice[1..N | "invoices"]
+}
+
+relationship ManufacturerProduct {
+    Manufacturer[1 | "manufacturer"] -> Product[1..N | "products"]
+}
+
+relationship ManufacturerRestock {
+    Manufacturer[1 | "manufacturer"] -> RestockPurchaseOrder[0..N | "restock_orders"]
+}
+
+relationship ProductRestock {
+    Product[1 | "product"] -> RestockPurchaseOrder[0..N | "restock_orders"]
 }
