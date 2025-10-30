@@ -86,9 +86,9 @@ relationship OrderInvoice {
     Order[1 | "order"] -> Invoice[1 | "invoice"]
 }
 
-// Each invoice must belong to only 1 customer
-relationship CustomerInvoice {
-    Customer[0..N | "customer"] -> Invoice[1 | "invoice"]
+// Each invoice belongs to exactly one customer; a customer can have 0..N invoices
+relationship InvoiceCustomer {
+    Invoice[0..N | "invoice"] -> Customer[1 | "customer"]
 }
 
 // Each product must belong to one and only one manufacturer
