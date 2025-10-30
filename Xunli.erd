@@ -78,7 +78,7 @@ relationship OrderLine {
 
 // Each line must reference one and only one product (1..1)
 relationship ProductLine {
-    Product[1 | "product"] -> Line[1 | "line"]
+    Product[0..N | "product"] -> Line[1 | "line"]
 }
 
 // Each order must generate one and only one invoice (1..1)
@@ -88,12 +88,12 @@ relationship OrderInvoice {
 
 // Each invoice must belong to only 1 customer
 relationship CustomerInvoice {
-    Customer[1 | "customer"] -> Invoice[0..N | "invoices"]
+    Customer[0..N | "customer"] -> Invoice[1 | "invoice"]
 }
 
 // Each product must belong to one and only one manufacturer
 relationship ManufacturerProduct {
-    Manufacturer[1 | "manufacturer"] -> Product[1..N | "products"]
+    Manufacturer[1 | "manufacturer"] -> Product[0..N | "products"]
 }
 
 // Each manufacturer can have 0 or many restock purchase orders
@@ -103,6 +103,5 @@ relationship ManufacturerRestock {
 
 // Each restock purchase order must have 1 or many products
 relationship ProductRestock {
-    Product[1 | "product"] -> RestockPurchaseOrder[0..N | "restock_orders"]
-}
+    RestockPurchaseOrder[1 | "restock_order"] -> Product[0..N | "product"]
 }
